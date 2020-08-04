@@ -143,6 +143,13 @@ Blockly.RobConfig.findLegalName = function(name, block) {
 };
 
 Blockly.RobConfig.isLegalName = function(name, block) {
+    // Iterate through the block itself, as it may be a super block with subcomponents
+    for (var i = 0; i < block.inputList.length; i++) {
+        var varName = block.getFieldValue('SUBCOMPONENT' + i);
+        if (varName && Blockly.Names.equals(name, varName)) {
+            return false;
+        }
+    }
     var blocks = Blockly.mainWorkspace.getAllBlocks();
     // Iterate through every block.
     for (var x = 0; x < blocks.length; x++) {
@@ -151,9 +158,12 @@ Blockly.RobConfig.isLegalName = function(name, block) {
         }
         var func = blocks[x].getConfigDecl;
         if (func) {
-            var varName = func.call(blocks[x]);
-            if (Blockly.Names.equals(name, varName.name)) {
-                return false;
+            var configs = func.call(blocks[x]);
+            for (var i = 0; i < configs.length; i++) {
+                var varName = configs[i];
+                if (Blockly.Names.equals(name, varName.name)) {
+                    return false;
+                }
             }
         }
     }

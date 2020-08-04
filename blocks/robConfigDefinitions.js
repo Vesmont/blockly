@@ -835,6 +835,21 @@ confBlocks.ledbar.calliope = {
     sensor : false
 };
 
+confBlocks.callibot = {}
+confBlocks.callibot.calliope = {
+    title : 'CALLIBOT',
+    super : true,
+    subcomponents : [ [ 'MOTOR', Blockly.Msg.MOTOR + " " + Blockly.Msg.MOTOR_LEFT ],
+                      [ 'MOTOR', Blockly.Msg.MOTOR + " " + Blockly.Msg.MOTOR_RIGHT ],
+                      [ 'RGBLED', Blockly.Msg.MODE_RGB + " " + Blockly.Msg.LED + " " + Blockly.Msg.LEFT + " " + Blockly.Msg.SLOT_FRONT],
+                      [ 'RGBLED', Blockly.Msg.MODE_RGB + " " + Blockly.Msg.LED + " " + Blockly.Msg.RIGHT + " " + Blockly.Msg.SLOT_FRONT],
+                      [ 'RGBLED', Blockly.Msg.MODE_RGB + " " + Blockly.Msg.LED + " " + Blockly.Msg.LEFT + " " + Blockly.Msg.SLOT_REAR],
+                      [ 'RGBLED', Blockly.Msg.MODE_RGB + " " + Blockly.Msg.LED + " " + Blockly.Msg.RIGHT + " " + Blockly.Msg.SLOT_REAR],
+                      [ 'RGBLED', Blockly.Msg.MODE_RGB + " " + Blockly.Msg.LED + " " + Blockly.Msg.NAO_LED_ALL],
+                      [ 'INFRARED', Blockly.Msg.SENSOR_INFRARED ],
+                      [ 'ULTRASONIC', Blockly.Msg.SENSOR_ULTRASONIC ] ]
+};
+
 function initConfBlocks() {
     for ( var confBlock in confBlocks) {
         if (confBlocks.hasOwnProperty(confBlock)) {

@@ -52,8 +52,13 @@ Blockly.Blocks['robConf_generic'] = {
                 || Blockly.checkMsgKey('CONFIGURATION_PORT'), this);
         this.nameOld = name;
         var nameField = new Blockly.FieldTextInput(name, validateName);
+        if (!confBlock.super) {
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT).appendField(Blockly.Msg[type + confBlock.title + "_" + this.workspace.device.toUpperCase()]
                 || Blockly.Msg[type + confBlock.title] || type + confBlock.title, 'SENSORTITLE').appendField(nameField, 'NAME');
+        } else {
+            this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT).appendField(Blockly.Msg[type + confBlock.title + "_" + this.workspace.device.toUpperCase()]
+            || Blockly.Msg[type + confBlock.title] || type + confBlock.title, 'SENSORTITLE');
+        }
 
         if (confBlock.bricks) {
             var container = Blockly.Workspace.getByContainer("bricklyDiv");
@@ -134,6 +139,13 @@ Blockly.Blocks['robConf_generic'] = {
                 this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT).appendField(confBlock.fixedPorts[i][0]).appendField(dropDown);
             }
         }
+        if (confBlock.subcomponents) {
+            for (var i = 0; i < confBlock.subcomponents.length; i++) {
+                var name = confBlock.subcomponents[i][1];
+                var textField = new Blockly.FieldTextInput(Blockly.RobConfig.findLegalName(confBlock.subcomponents[i][1].charAt(0), this), validateName);
+                this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT).appendField(name).appendField(textField, "SUBCOMPONENT" + i);
+            }
+        }
         var that = this;
         this.setTooltip(function() {
             return Blockly.Msg[confBlock.title + '_TOOLTIP_' + that.workspace.device.toUpperCase()] || Blockly.Msg[confBlock.title + '_TOOLTIP']
@@ -141,10 +153,21 @@ Blockly.Blocks['robConf_generic'] = {
         });
         this.type = 'robConf_' + confBlock.title.toLowerCase();
         this.getConfigDecl = function() {
-            return {
-                'type' : confBlock.title.toLowerCase(),
-                'name' : that.getFieldValue('NAME')
+            var configDecl = [];
+            if (confBlock.super) {
+                for (var i = 0; i < confBlock.subcomponents.length; i++) {
+                    configDecl.push({
+                        'type' : confBlock.subcomponents[i][0].toLowerCase(),
+                        'name' : that.getFieldValue('SUBCOMPONENT' + i)
+                    });
+                }
+            } else {
+                configDecl.push({
+                    'type' : confBlock.title.toLowerCase(),
+                    'name' : that.getFieldValue('NAME')
+                });
             }
+            return configDecl;
         };
         this.onDispose = function() {
             Blockly.RobConfig.disposeConfig(this);
